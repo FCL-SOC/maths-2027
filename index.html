@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2027 Curriculum Plans</title>
+<title>2027 English Curriculum Plans</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
@@ -36,8 +36,10 @@
   .soon{display:flex;justify-content:space-between;align-items:center;padding:24px 28px;min-height:84px;border:1px dashed var(--c);border-left:8px solid var(--l);border-radius:6px;color:var(--soon);font-size:18px;background:#fff}
   .soon small{font-style:italic;font-size:14px}
 
-  footer{max-width:800px;margin:20px auto 24px;padding:0 16px;font-size:14px;color:var(--muted)}
-  @media (max-width:560px){.cols{grid-template-columns:1fr}}
+  .y11,.y12{--c:var(--navy);--l:#e3e7f0}
+  .senior{grid-column:1/-1;margin-bottom:28px}
+  .senior .list{grid-template-columns:1fr 1fr;gap:20px}
+  @media (max-width:560px){.cols{grid-template-columns:1fr}.senior .list{grid-template-columns:1fr;gap:16px}}
   @media (prefers-reduced-motion:reduce){a.plan{transition:none}}
 </style>
 </head>
@@ -45,8 +47,8 @@
 <header>
   <div class="banner">
     <div class="school">South Oakleigh College</div>
-    <h1>2027 Curriculum Plans</h1>
-    <div class="tag">English · Years 7 to 10</div>
+    <h1>2027 English Curriculum Plans</h1>
+    <div class="tag">Years 7 to 12</div>
   </div>
   <div class="strip"><span></span><span></span><span></span><span></span></div>
 </header>
@@ -71,8 +73,13 @@
       <a class="plan y10" href="10ADVEN1.html"><span>Year 10</span><small>Open plan</small></a>
     </div>
   </section>
-</main>
 
-<footer>Print or save as PDF from inside a plan (A3 landscape).</footer>
+  <section class="col senior">
+    <div class="list">
+      <div class="soon y11"><span>Year 11</span><small>Coming soon</small></div>
+      <div class="soon y12"><span>Year 12</span><small>Coming soon</small></div>
+    </div>
+  </section>
+</main>
 </body>
 </html>
