@@ -63,15 +63,28 @@
   .codes:empty::before{content:attr(data-ph);color:var(--ph);font-style:italic}
   :focus-visible{outline:2px solid var(--navy);outline-offset:1px}
   .wn:focus,.info:focus{outline:2px solid var(--navy)}
-  /* live site: read-only until Edit; .ed = edit mode only, .rd = read-only only, .local = never on live */
-  #edit{display:none}
-  body.live.ro #edit{display:inline-flex}
-  body.ro .ed,body.live .local,body:not(.ro) .rd{display:none!important}
+  /* live site is read-only (body.ro): .ed = editing only, .rd = read-only only */
+  body.ro .ed,body:not(.ro) .rd{display:none!important}
   body.ro .wn:empty::before,body.ro .fld:empty::before,body.ro .info:empty::before,body.ro .codes:empty::before{content:none}
+  /* read-only: quiet lesson bars (solid "filled" colour only matters while editing) */
+  body.ro .lh,body.ro .les.filled .lh{background:#fff;color:var(--ink);border-left:4px solid var(--c)}
+  body.ro td.grey .lh{border-left-color:#5f666d}
+  /* week topic leads the column */
+  .wn{font-family:var(--serif);font-size:15px;line-height:1.25}
+  .wn.cat{font-family:var(--sans);line-height:1.3}
+  /* this week */
+  th.now,td.now{box-shadow:inset 0 0 0 3px var(--navy)}
+  th.now .tag{background:var(--navy);margin:2px -4px -4px;padding:2px}
+  /* term jump links */
+  .jump{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:2;background:var(--bg);padding:8px 0}
+  .jump a{color:#fff;background:var(--c);padding:7px 14px;border-radius:4px;text-decoration:none;font-weight:bold;font-size:14px}
+  .jump a.nowlink{--c:var(--navy)}
+  section{scroll-margin-top:60px}
   @media print{
     @page{size:A3 landscape;margin:8mm}
     body{background:#fff;padding:0}
-    .tools,.hint{display:none}
+    .tools,.hint,.jump{display:none}
+    th.now,td.now{box-shadow:none}
     .grid{gap:8px}
     section{border:none;border-top:4px solid var(--c)}
     section+section{break-before:page}
@@ -89,10 +102,9 @@
   <div class="tools">
     <span id="status" aria-live="polite"></span>
     <a href="index.html">All plans</a>
-    <button id="edit">Edit</button>
     <button id="save" class="ed">Save</button>
     <button onclick="window.print()">Print / save as PDF</button>
-    <button id="clear" class="ed local">Clear all</button>
+    <button id="clear" class="ed">Clear all</button>
   </div>
 </header>
 <p class="hint"><span class="ed">Click a lesson to open it, then type. Press Save (or Ctrl+S) to save your changes.</span><span class="rd">Click a lesson or curriculum codes to see the details.</span> Prints on A3 landscape.</p>
@@ -115,24 +127,36 @@ const grid=document.getElementById("grid");
 const statusEl=document.getElementById("status");
 const fmt=d=>d.toLocaleDateString("en-AU",{day:"numeric",month:"short"});
 function setStatus(t){statusEl.textContent=t;}
+// ?today=2027-02-17 previews the "This week" highlight
+const qd=new URLSearchParams(location.search).get("today");
+const today=qd?new Date(qd+"T00:00"):new Date();today.setHours(0,0,0,0);
+let nowId=null;
+const jump=document.createElement("nav");jump.className="jump";jump.setAttribute("aria-label","Terms");
+grid.appendChild(jump);
 
 TERMS.forEach(t=>{
-  const s=document.createElement("section");s.className="term t"+t.n;
+  const s=document.createElement("section");s.className="term t"+t.n;s.id="term"+t.n;
+  jump.insertAdjacentHTML("beforeend",`<a class="t${t.n}" href="#term${t.n}">Term ${t.n}</a>`);
+  const now={};
   let h=`<h2>Term ${t.n}</h2><div class="dates">${t.label} · ${t.weeks} weeks</div>`+
         `<table style="width:${(t.weeks/11*100).toFixed(2)}%;min-width:${t.weeks*120}px"><thead><tr>`;
   for(let w=1;w<=t.weeks;w++){
     const g=t.grey[w];
     const d=new Date(t.start+"T00:00");d.setDate(d.getDate()+7*(w-1));
-    h+=`<th${g?' class="grey"':""}>Week ${w}<small>${fmt(d)}</small>`+
+    const e=new Date(d);e.setDate(e.getDate()+7);
+    if(today>=d&&today<e){now[w]=true;nowId="term"+t.n;}
+    const cls=[g?"grey":"",now[w]?"now":""].filter(Boolean).join(" ");
+    h+=`<th${cls?` class="${cls}"`:""}>Week ${w}<small>${fmt(d)}</small>`+
        `${t.notes[w]?`<span class="hol">${t.notes[w]}</span>`:""}`+
-       `${g?`<span class="tag">${g}</span>`:""}</th>`;
+       `${g?`<span class="tag">${g}</span>`:""}${now[w]?`<span class="tag">This week</span>`:""}</th>`;
   }
   h+="</tr></thead><tbody><tr>";
   for(let w=1;w<=t.weeks;w++){
     const g=t.grey[w];
     const lessons=(t.noLessons||[]).includes(w)?[]:t.hol.includes(w)?["Lesson I","Lesson II","Lesson III","Ad libitum"]:["Lesson I","Lesson II","Lesson III","Lesson IV"];
     const nn=(t.noLessons||[]).includes(w)&&!(t.exam||[]).includes(w);
-    h+=`<td${g&&!(t.exam||[]).includes(w)?' class="grey"':""}>${nn?"":`<div class="wn" contenteditable="true" data-k="${t.n}--${w}"></div><div class="info" contenteditable="true" data-k="info-${t.n}--${w}" data-ph="Assessment details"></div><div class="ccw"><div class="cch" role="button" tabindex="0" aria-expanded="false">Curriculum codes</div><div class="codes" contenteditable="true" data-k="codes-${t.n}--${w}" data-ph="Add curriculum codes"></div></div>`}`;
+    const tcls=[g&&!(t.exam||[]).includes(w)?"grey":"",now[w]?"now":""].filter(Boolean).join(" ");
+    h+=`<td${tcls?` class="${tcls}"`:""}>${nn?"":`<div class="wn" contenteditable="true" data-k="${t.n}--${w}"></div><div class="info" contenteditable="true" data-k="info-${t.n}--${w}" data-ph="Assessment details"></div><div class="ccw"><div class="cch" role="button" tabindex="0" aria-expanded="false">Curriculum codes</div><div class="codes" contenteditable="true" data-k="codes-${t.n}--${w}" data-ph="Add curriculum codes"></div></div>`}`;
     lessons.forEach((name,i)=>{
       const k=`${t.n}-${w}-${i+1}`;
       h+=`<div class="les"><div class="lh" role="button" tabindex="0" aria-expanded="false">${store[`${t.n}-${w}-${i+1}-title`]||name}</div><div class="lb">`+
@@ -146,6 +170,7 @@ TERMS.forEach(t=>{
   h+="</tr></tbody></table>";
   s.innerHTML=h;grid.appendChild(s);
 });
+if(nowId)jump.insertAdjacentHTML("beforeend",`<a class="nowlink" href="#${nowId}">This week</a>`);
 
 document.querySelectorAll("[data-k]").forEach(el=>{
   el.textContent=store[el.dataset.k]||"";
@@ -164,60 +189,21 @@ document.querySelectorAll(".lh,.cch").forEach(b=>{
 document.querySelectorAll(".wn").forEach(w=>w.addEventListener("click",()=>{if(w.classList.contains("cat"))w.classList.toggle("open");}));
 document.querySelector("h1").addEventListener("input",()=>{dirty=true;setStatus("Unsaved changes");});
 
-// Live site (GitHub Pages): read-only until Edit; Save then commits this file to the repo.
+// Live site (GitHub Pages) is read-only; edit a local copy and push it to update the site.
 const LIVE=location.hostname.endsWith("github.io");
-const GH=`https://api.github.com/repos/${location.hostname.split(".")[0]}/${location.pathname.split("/")[1]}/contents/${location.pathname.split("/").pop()}`;
-let token=null, sha=null;
-function setEditable(on){
-  document.body.classList.toggle("ro",!on);
-  document.querySelectorAll("[data-k],h1").forEach(el=>el.contentEditable=on);
-}
-document.body.classList.toggle("live",LIVE);
-setEditable(!LIVE);
-function gh(method,body){
-  return fetch(GH,{method,cache:"no-store",headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json"},body:body&&JSON.stringify(body)});
-}
-document.getElementById("edit").onclick=async()=>{
-  try{token=localStorage.getItem("ghToken");}catch(e){}
-  if(!token)token=window.prompt("Paste your GitHub access token to edit this plan.");
-  if(!token)return;
-  setStatus("Checking for newer changes…");
-  const r=await gh("GET").catch(()=>null);
-  if(!r||!r.ok){
-    if(r&&r.status===401){try{localStorage.removeItem("ghToken");}catch(e){}setStatus("That token wasn't accepted. Click Edit to try again.");}
-    else setStatus("Couldn't reach GitHub. Check your connection, then click Edit again.");
-    return;
-  }
-  const j=await r.json();
-  const src=new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),ch=>ch.charCodeAt(0)));
-  const m=src.match(/^const SAVED=(\{.*\});$/m);
-  if(!m||JSON.stringify(JSON.parse(m[1]))!==JSON.stringify(SAVED)){setStatus("This page is out of date. Reload in a minute, then click Edit.");return;}
-  try{localStorage.setItem("ghToken",token);}catch(e){}
-  sha=j.sha;setEditable(true);setStatus("Editing");
-};
-async function saveLive(){
-  setStatus("Saving…");
-  let bin="";new TextEncoder().encode(fileText()).forEach(b=>bin+=String.fromCharCode(b));
-  const r=await gh("PUT",{message:"Update "+location.pathname.split("/").pop()+" from the live site",content:btoa(bin),sha}).catch(()=>null);
-  if(r&&r.ok){sha=(await r.json()).content.sha;dirty=false;setStatus("Saved. The live site shows it in a minute or two.");return;}
-  setStatus(!r?"Couldn't reach GitHub. Your changes are still here, so try Save again."
-    :r.status===409||r.status===422?"Someone else saved this plan after you started. Copy anything you need, then reload."
-    :"This token can't save to the plan. Ask the site owner for access.");
-}
+if(LIVE){document.body.classList.add("ro");document.querySelectorAll("[data-k],h1").forEach(el=>el.contentEditable=false);}
 
 // Build the file text: original page with the current entries written into SAVED
 function fileText(){
   const c=document.documentElement.cloneNode(true);
   c.querySelector("#grid").innerHTML="";
   c.querySelector("#status").textContent="";
-  c.querySelector("body").removeAttribute("class");
-  c.querySelector("h1").setAttribute("contenteditable","true");
   const data=JSON.stringify(store);
   const html="<!doctype html>\n"+c.outerHTML;
   return html.replace(/const SAVED=.*;\n/, ()=>"const SAVED="+data+";\n");
 }
 async function save(){
-  if(LIVE){if(!document.body.classList.contains("ro"))saveLive();return;}
+  if(LIVE)return;
   const text=fileText();
   if(window.showSaveFilePicker){
     try{
