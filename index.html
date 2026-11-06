@@ -19,6 +19,8 @@
   .banner .school{font-size:15px;opacity:.85}
   .banner h1{margin:8px 0 6px;font-family:var(--serif);font-size:clamp(30px,6vw,46px);font-weight:700;line-height:1.1}
   .banner .tag{font-size:16px;opacity:.85}
+  .banner .now{display:inline-block;margin:16px 0 0;padding:5px 16px;border:1px solid rgba(255,255,255,.4);border-radius:999px;font-size:15px}
+  .banner .now:empty{display:none}
   .strip{display:grid;grid-template-columns:repeat(4,1fr);height:6px}
   .strip span:nth-child(1){background:var(--t1)}.strip span:nth-child(2){background:var(--t2)}
   .strip span:nth-child(3){background:var(--t3)}.strip span:nth-child(4){background:var(--t4)}
@@ -32,6 +34,7 @@
   a.plan:hover{background:var(--c);color:#fff}
   a.plan:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
   a.plan small{font-weight:normal;font-size:15px}
+  a.plan .code{display:block;font-size:13px;font-weight:normal;opacity:.8;margin-top:2px}
   .y7{--c:var(--t1);--l:var(--t1l)} .y8{--c:var(--t2);--l:var(--t2l)} .y9{--c:var(--t3);--l:var(--t3l)} .y10{--c:var(--t4);--l:var(--t4l)}
 
   .soon{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;min-height:48px;border:1px dashed var(--c);border-left:6px solid var(--l);border-radius:4px;color:var(--soon);font-size:16px;background:#fff}
@@ -52,6 +55,7 @@
     <div class="school">South Oakleigh College</div>
     <h1>2027 English Curriculum Plans</h1>
     <div class="tag">Years 7 to 12</div>
+    <p class="now" id="now"></p>
   </div>
   <div class="strip"><span></span><span></span><span></span><span></span></div>
 </header>
@@ -72,8 +76,8 @@
     <div class="list">
       <div class="soon y7"><span>Year 7</span><small>Coming soon</small></div>
       <div class="soon y8"><span>Year 8</span><small>Coming soon</small></div>
-      <a class="plan y9" href="09ADVEN1.html"><span>Year 9</span><small>Open plan</small></a>
-      <a class="plan y10" href="10ADVEN1.html"><span>Year 10</span><small>Open plan</small></a>
+      <a class="plan y9" href="09ADVEN1.html"><span>Year 9<span class="code">09ADVEN1</span></span><small>Open plan</small></a>
+      <a class="plan y10" href="10ADVEN1.html"><span>Year 10<span class="code">10ADVEN1</span></span><small>Open plan</small></a>
     </div>
   </section>
 
@@ -87,5 +91,26 @@
 </main>
 
 <footer><img src="logo.png" width="120" height="122" alt="English faculty values: Consistency, Culture and Collaboration"></footer>
+<script>
+// Where we are in the 2027 school year (same term dates as the plans). ?today=2027-02-17 previews.
+(()=>{
+  const T=[["2027-01-25","Wed 27 Jan","2027-03-25"],["2027-04-12","Mon 12 Apr","2027-06-25"],["2027-07-12","Mon 12 Jul","2027-09-17"],["2027-10-04","Mon 4 Oct","2027-12-17"]];
+  const qd=new URLSearchParams(location.search).get("today");
+  const today=qd?new Date(qd+"T00:00"):new Date();today.setHours(0,0,0,0);
+  const d=s=>new Date(s+"T00:00"), el=document.getElementById("now");
+  if(today<d("2027-01-27")){el.textContent="Term 1 starts Wed 27 Jan 2027";return;}
+  for(let i=0;i<T.length;i++){
+    const [mon,first,end]=T[i];
+    if(today>=d(mon)&&today<=d(end)){
+      const w=Math.floor((today-d(mon))/864e5/7)+1;
+      el.textContent=`Today: Term ${i+1}, Week ${w}`;
+      document.querySelectorAll("a.plan").forEach(a=>{a.href=a.getAttribute("href")+`#w${i+1}-${w}`;a.querySelector("small").textContent=`Open at Week ${w}`;});
+      return;
+    }
+    if(T[i+1]&&today>d(end)&&today<d(T[i+1][0])){el.textContent=`School holidays. Term ${i+2} starts ${T[i+1][1]}`;return;}
+  }
+  el.textContent="The 2027 school year has finished";
+})();
+</script>
 </body>
 </html>

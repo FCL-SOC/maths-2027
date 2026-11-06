@@ -96,8 +96,18 @@
   .jump a{color:#fff;background:var(--c);min-height:36px;display:inline-flex;align-items:center;padding:0 14px;border-radius:4px;text-decoration:none;font-weight:bold;font-size:14px}
   .jump a.nowlink{--c:var(--navy)}
   section{scroll-margin-top:60px}
-  /* assessment overview */
+  /* assessments at a glance (collapsible) */
   .overview{--c:var(--navy)}
+  .overview summary{list-style:none;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;padding:2px 0;border-radius:4px}
+  .overview summary::-webkit-details-marker{display:none}
+  .overview summary h2{margin:0;color:var(--navy)}
+  .overview summary::before{content:"\25B8";content:"\25B8" / "";color:var(--navy);font-size:16px;transition:transform .15s}
+  .overview[open] summary::before{transform:rotate(90deg)}
+  .overview .count{font-size:13px;font-weight:bold;color:#fff;background:var(--navy);border-radius:999px;padding:2px 9px}
+  .overview .more{font-size:13px;color:var(--muted)}
+  .overview .more::after{content:"Show"}
+  .overview[open] .more::after{content:"Hide"}
+  .overview summary:hover h2{text-decoration:underline}
   .overview table{width:100%;table-layout:auto;margin-top:8px}
   .overview th{background:var(--navy);color:#fff;text-align:left;font-size:13px}
   .overview td{background:#fff;padding:6px}
@@ -105,6 +115,16 @@
   .overview td small{display:block;color:var(--muted)}
   .overview .ck{color:var(--muted);opacity:1}
   .overview a{color:var(--navy);font-weight:bold}
+  /* plan search */
+  .search{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .search input{font:inherit;font-size:14px;min-height:36px;width:260px;padding:6px 10px;border:1px solid #6b7680;border-radius:4px;background:#fff}
+  .search button{font:inherit;font-size:14px;min-height:36px;padding:0 12px;border:1px solid var(--line);background:#fff;border-radius:4px;cursor:pointer}
+  #qcount{font-size:13px;color:var(--muted)}
+  td.dim{opacity:.4}
+  .hit{box-shadow:0 0 0 2px #e0a800}
+  .hit.cur{box-shadow:0 0 0 3px var(--navy)}
+  ::highlight(search){background:#ffe066;color:#1f2933}
+  @media (prefers-reduced-motion:reduce){.overview summary::before{transition:none}}
   /* bigger targets on touch screens */
   @media (pointer:coarse){.lh,.cch{min-height:40px;display:flex;align-items:center}.jump a,.tools button,.btn{min-height:44px}}
   /* phones: weeks stack vertically instead of scrolling sideways */
@@ -116,13 +136,17 @@
     .term th small,.term th .hol,.term th .tag{display:inline}
     .term td{order:calc(var(--o) * 2);border-top:none}
     .overview td:first-child{white-space:normal}
+    .search{margin-left:0;width:100%}.search input{flex:1;width:auto}
+    section,td{scroll-margin-top:120px}
   }
   @media print{
     @page{size:A3 landscape;margin:8mm}
     body{background:#fff;padding:0}
     .tools,.hint,.jump,.home,.skip{display:none}
     header{grid-template-columns:1fr}
-    th.now,td.now{box-shadow:none}
+    th.now,td.now,.hit{box-shadow:none}
+    td.dim{opacity:1}
+    .overview .more,.overview summary::before{display:none}
     .grid{gap:8px}
     section,.overview{border:none;border-top:4px solid var(--c)}
     section+section{break-before:page}
@@ -176,12 +200,16 @@ const qd=new URLSearchParams(location.search).get("today");
 const today=qd?new Date(qd+"T00:00"):new Date();today.setHours(0,0,0,0);
 let nowId=null;
 const weekDate={};
-const jump=document.createElement("nav");jump.className="jump";jump.setAttribute("aria-label","Terms");
+const jump=document.createElement("nav");jump.className="jump";jump.setAttribute("aria-label","Terms and search");
 grid.appendChild(jump);
+const terms=document.createElement("div");terms.style.cssText="display:contents";jump.appendChild(terms);
+jump.insertAdjacentHTML("beforeend",`<div class="search" role="search"><label class="sr" for="q">Search this plan</label>`+
+  `<input id="q" type="search" placeholder="Search this plan, e.g. Macbeth" autocomplete="off">`+
+  `<button type="button" id="qnext" hidden>Next match</button><span id="qcount" role="status"></span></div>`);
 
 TERMS.forEach(t=>{
   const s=document.createElement("section");s.className="term t"+t.n;s.id="term"+t.n;
-  jump.insertAdjacentHTML("beforeend",`<a class="t${t.n}" href="#term${t.n}">Term ${t.n}</a>`);
+  terms.insertAdjacentHTML("beforeend",`<a class="t${t.n}" href="#term${t.n}">Term ${t.n}</a>`);
   const now={};
   let h=`<h2>Term ${t.n}</h2><div class="dates">${t.label} · ${t.weeks} weeks</div>`+
         `<table style="width:${(t.weeks/11*100).toFixed(2)}%;min-width:${t.weeks*120}px"><caption class="sr">Term ${t.n} weekly plan</caption><thead><tr>`;
@@ -216,7 +244,7 @@ TERMS.forEach(t=>{
   h+="</tr></tbody></table>";
   s.innerHTML=h;grid.appendChild(s);
 });
-if(nowId)jump.insertAdjacentHTML("beforeend",`<a class="nowlink" href="#${nowId}">This week</a>`);
+if(nowId)terms.insertAdjacentHTML("beforeend",`<a class="nowlink" href="#${nowId}">This week</a>`);
 
 document.querySelectorAll("[data-k]").forEach(el=>{
   el.textContent=store[el.dataset.k]||"";
@@ -265,9 +293,66 @@ document.querySelector("h1").addEventListener("input",()=>{dirty=true;setStatus(
       `<td>${esc(store["codes-"+k]||"")}</td></tr>`;
   });
   if(!rows.length)return;
-  jump.insertAdjacentHTML("afterend",`<div class="overview"><h2>Assessments</h2><table><caption class="sr">All assessments in this plan</caption>`+
-    `<thead><tr><th scope="col">When</th><th scope="col">Assessment</th><th scope="col">Curriculum codes</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`);
+  jump.insertAdjacentHTML("afterend",`<details class="overview" id="overview"><summary><h2>Assessments at a glance</h2><span class="count">${rows.length}</span><span class="more"></span></summary>`+
+    `<table><caption class="sr">All assessments in this plan</caption>`+
+    `<thead><tr><th scope="col">When</th><th scope="col">Assessment</th><th scope="col">Curriculum codes</th></tr></thead><tbody>${rows.join("")}</tbody></table></details>`);
+  const ov=document.getElementById("overview");
+  // a "When" link jumps to that week and opens its assessment details
+  ov.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;const w=document.querySelector(a.getAttribute("href")+" .wn.cat");if(w)setOpen(w,w.nextElementSibling,true);});
+  // always print the table, then restore
+  let was;addEventListener("beforeprint",()=>{was=ov.open;ov.open=true;});addEventListener("afterprint",()=>{ov.open=was;});
 })();
+
+// Search: highlights matches, opens the lessons they're in, fades other weeks. Display only.
+(()=>{
+  const q=document.getElementById("q"),cnt=document.getElementById("qcount"),next=document.getElementById("qnext");
+  const HL=window.CSS&&CSS.highlights&&window.Highlight;
+  let hits=[],cur=-1,opened=[],timer;
+  function clear(){
+    opened.forEach(([b,p])=>setOpen(b,p,false));opened=[];
+    document.querySelectorAll(".hit,.dim").forEach(e=>e.classList.remove("hit","cur","dim"));
+    if(HL)CSS.highlights.delete("search");
+    hits=[];cur=-1;next.hidden=true;cnt.textContent="";
+  }
+  function open(b,p){if(p.hidden){setOpen(b,p,true);opened.push([b,p]);}}
+  function run(){
+    clear();
+    const term=q.value.trim().toLowerCase();
+    if(term.length<2)return;
+    const ranges=[];let weeks=0;
+    document.querySelectorAll(".term td").forEach(td=>{
+      let found=false;
+      td.querySelectorAll(".wn,.info,.codes,.lh,.fld").forEach(el=>{
+        if(!el.textContent.toLowerCase().includes(term))return;
+        found=true;
+        const les=el.closest(".les");
+        if(les){const b=les.querySelector(".lh");open(b,b.nextElementSibling);}
+        else if(el.classList.contains("codes"))open(el.previousElementSibling,el);
+        else if(el.classList.contains("info")&&el.previousElementSibling.classList.contains("cat"))open(el.previousElementSibling,el);
+        const box=les||el;if(!hits.includes(box)){hits.push(box);box.classList.add("hit");}
+        if(HL){const tw=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let n;
+          while((n=tw.nextNode())){const s=n.data.toLowerCase();let i=s.indexOf(term);
+            while(i>-1){const r=new Range();r.setStart(n,i);r.setEnd(n,i+term.length);ranges.push(r);i=s.indexOf(term,i+term.length);}}}
+      });
+      if(found)weeks++;else td.classList.add("dim");
+    });
+    if(HL&&ranges.length)CSS.highlights.set("search",new Highlight(...ranges));
+    cnt.textContent=hits.length?`${hits.length} match${hits.length>1?"es":""} in ${weeks} week${weeks>1?"s":""}`:"No matches. Check the spelling or try a shorter word.";
+    next.hidden=!hits.length;
+  }
+  function go(){
+    if(!hits.length)return;
+    if(cur>-1)hits[cur].classList.remove("cur");
+    cur=(cur+1)%hits.length;hits[cur].classList.add("cur");
+    hits[cur].scrollIntoView({block:"center",inline:"center"});
+    if(hits.length>1)cnt.textContent=`Match ${cur+1} of ${hits.length}`;
+  }
+  q.addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(run,150);});
+  q.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();clearTimeout(timer);if(!hits.length)run();go();}if(e.key==="Escape"){q.value="";clear();}});
+  next.addEventListener("click",go);
+})();
+
+if(location.hash){const el=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(el)requestAnimationFrame(()=>el.scrollIntoView({block:"start",inline:"center"}));}
 
 // Live site (GitHub Pages) is read-only; edit a local copy and push it to update the site.
 const LIVE=location.hostname.endsWith("github.io");
