@@ -18,6 +18,7 @@
   .tools button,.tools a{font:inherit;font-size:14px;min-height:36px;padding:7px 14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
   .tools button:hover,.tools a:hover{border-color:var(--navy)}
   #save{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .tools a.home{gap:6px;font-weight:bold;color:var(--navy);border-color:var(--navy)}
   #status{font-size:14px;color:var(--muted)}
   .hint{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:80ch}
   .grid{display:grid;grid-template-columns:1fr;gap:20px}
@@ -101,7 +102,7 @@
   <h1 contenteditable="true">10ADVEN1 Curriculum Plan 2027</h1>
   <div class="tools">
     <span id="status" aria-live="polite"></span>
-    <a href="index.html">All plans</a>
+    <a class="home" href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>Home</a>
     <button id="save" class="ed">Save</button>
     <button onclick="window.print()">Print / save as PDF</button>
     <button id="clear" class="ed">Clear all</button>
