@@ -37,7 +37,7 @@
   td.grey{background:#e1e3e5;color:#4a5057}
   .wn{min-height:26px;font-size:13px;font-weight:bold;border-bottom:1px solid var(--line);margin-bottom:4px;outline:none;word-wrap:break-word}
   .wn:empty::before{content:"Notes / CAT";color:var(--ph);font-weight:normal}
-  .wn.cat{background:var(--navy);color:#fff;border:none;border-radius:3px;padding:5px 7px;margin-bottom:6px;font-size:13px;cursor:pointer}
+  .wn.cat{background:var(--navy);color:#fff;border:none;border-radius:3px;padding:4px 5px;margin-bottom:6px;font-size:11.5px;cursor:pointer}
   .wn.cat:empty::before{content:none}
   .les{margin-top:3px}
   .lh{cursor:pointer;background:rgba(0,0,0,.07);padding:5px 7px;font-weight:bold;border:1px solid var(--line);user-select:none;font-size:13px}
@@ -63,14 +63,22 @@
   .codes:empty::before{content:attr(data-ph);color:var(--ph);font-style:italic}
   :focus-visible{outline:2px solid var(--navy);outline-offset:1px}
   .wn:focus,.info:focus{outline:2px solid var(--navy)}
+  /* live site: read-only until Edit; .ed = edit mode only, .rd = read-only only, .local = never on live */
+  #edit{display:none}
+  body.live.ro #edit{display:inline-flex}
+  body.ro .ed,body.live .local,body:not(.ro) .rd{display:none!important}
+  body.ro .wn:empty::before,body.ro .fld:empty::before,body.ro .info:empty::before,body.ro .codes:empty::before{content:none}
   @media print{
     @page{size:A3 landscape;margin:8mm}
     body{background:#fff;padding:0}
     .tools,.hint{display:none}
     .grid{gap:8px}
-    section{break-inside:avoid;border:none;border-top:4px solid var(--c)}
+    section{border:none;border-top:4px solid var(--c)}
+    section+section{break-before:page}
     .lb{display:block!important;min-height:30px}
-    .lh::before{content:""}
+    .lh::before,.cch::before,.wn:empty::before,.fld:empty::before{content:""}
+    .codes:not(:empty),.wn.cat + .info:not(:empty){display:block!important}
+    .ccw:has(.codes:empty){display:none}
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
 </style>
@@ -81,12 +89,13 @@
   <div class="tools">
     <span id="status" aria-live="polite"></span>
     <a href="index.html">All plans</a>
-    <button id="save">Save</button>
+    <button id="edit">Edit</button>
+    <button id="save" class="ed">Save</button>
     <button onclick="window.print()">Print / save as PDF</button>
-    <button id="clear">Clear all</button>
+    <button id="clear" class="ed local">Clear all</button>
   </div>
 </header>
-<p class="hint">Click a lesson to open it, then type. Press Save (or Ctrl+S) to save your changes into this file. Prints on A3 landscape.</p>
+<p class="hint"><span class="ed">Click a lesson to open it, then type. Press Save (or Ctrl+S) to save your changes.</span><span class="rd">Click a lesson or curriculum codes to see the details.</span> Prints on A3 landscape.</p>
 <div class="grid" id="grid"></div>
 <script>
 const TERMS=[
@@ -155,16 +164,60 @@ document.querySelectorAll(".lh,.cch").forEach(b=>{
 document.querySelectorAll(".wn").forEach(w=>w.addEventListener("click",()=>{if(w.classList.contains("cat"))w.classList.toggle("open");}));
 document.querySelector("h1").addEventListener("input",()=>{dirty=true;setStatus("Unsaved changes");});
 
+// Live site (GitHub Pages): read-only until Edit; Save then commits this file to the repo.
+const LIVE=location.hostname.endsWith("github.io");
+const GH=`https://api.github.com/repos/${location.hostname.split(".")[0]}/${location.pathname.split("/")[1]}/contents/${location.pathname.split("/").pop()}`;
+let token=null, sha=null;
+function setEditable(on){
+  document.body.classList.toggle("ro",!on);
+  document.querySelectorAll("[data-k],h1").forEach(el=>el.contentEditable=on);
+}
+document.body.classList.toggle("live",LIVE);
+setEditable(!LIVE);
+function gh(method,body){
+  return fetch(GH,{method,cache:"no-store",headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json"},body:body&&JSON.stringify(body)});
+}
+document.getElementById("edit").onclick=async()=>{
+  try{token=localStorage.getItem("ghToken");}catch(e){}
+  if(!token)token=window.prompt("Paste your GitHub access token to edit this plan.");
+  if(!token)return;
+  setStatus("Checking for newer changes…");
+  const r=await gh("GET").catch(()=>null);
+  if(!r||!r.ok){
+    if(r&&r.status===401){try{localStorage.removeItem("ghToken");}catch(e){}setStatus("That token wasn't accepted. Click Edit to try again.");}
+    else setStatus("Couldn't reach GitHub. Check your connection, then click Edit again.");
+    return;
+  }
+  const j=await r.json();
+  const src=new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g,"")),ch=>ch.charCodeAt(0)));
+  const m=src.match(/^const SAVED=(\{.*\});$/m);
+  if(!m||JSON.stringify(JSON.parse(m[1]))!==JSON.stringify(SAVED)){setStatus("This page is out of date. Reload in a minute, then click Edit.");return;}
+  try{localStorage.setItem("ghToken",token);}catch(e){}
+  sha=j.sha;setEditable(true);setStatus("Editing");
+};
+async function saveLive(){
+  setStatus("Saving…");
+  let bin="";new TextEncoder().encode(fileText()).forEach(b=>bin+=String.fromCharCode(b));
+  const r=await gh("PUT",{message:"Update "+location.pathname.split("/").pop()+" from the live site",content:btoa(bin),sha}).catch(()=>null);
+  if(r&&r.ok){sha=(await r.json()).content.sha;dirty=false;setStatus("Saved. The live site shows it in a minute or two.");return;}
+  setStatus(!r?"Couldn't reach GitHub. Your changes are still here, so try Save again."
+    :r.status===409||r.status===422?"Someone else saved this plan after you started. Copy anything you need, then reload."
+    :"This token can't save to the plan. Ask the site owner for access.");
+}
+
 // Build the file text: original page with the current entries written into SAVED
 function fileText(){
   const c=document.documentElement.cloneNode(true);
   c.querySelector("#grid").innerHTML="";
   c.querySelector("#status").textContent="";
+  c.querySelector("body").removeAttribute("class");
+  c.querySelector("h1").setAttribute("contenteditable","true");
   const data=JSON.stringify(store);
   const html="<!doctype html>\n"+c.outerHTML;
   return html.replace(/const SAVED=.*;\n/, ()=>"const SAVED="+data+";\n");
 }
 async function save(){
+  if(LIVE){if(!document.body.classList.contains("ro"))saveLive();return;}
   const text=fileText();
   if(window.showSaveFilePicker){
     try{
@@ -189,7 +242,6 @@ async function save(){
   setStatus("Downloaded – replace the file in your folder with it");
 }
 document.getElementById("save").onclick=save;
-if(location.hostname.endsWith("github.io")){["save","clear"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});}
 document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();save();}});
 window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue="";}});
 document.getElementById("clear").onclick=()=>{
