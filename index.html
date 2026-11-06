@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027 Curriculum Plans</title>
+<style>
+  :root{--ink:#1f2933;--bg:#f7f7f5;--muted:#52606d;--navy:#1d2b4f;--soon:#8a939b;
+    --t1:#3d7cc9;--t1l:#e3eefa;--t2:#4caf50;--t2l:#e4f3e3;--t3:#d98a5f;--t3l:#f8e8de;--t4:#a35ea8;--t4l:#f1e4f2;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+
+  .banner{background:var(--navy);color:#fff;text-align:center;padding:42px 16px 36px}
+  .banner .school{font-size:13px;letter-spacing:3px;text-transform:uppercase;opacity:.75}
+  .banner h1{margin:10px 0 8px;font-size:clamp(24px,5vw,36px);letter-spacing:3px;text-transform:uppercase;font-weight:bold}
+  .banner .tag{font-size:15px;opacity:.85}
+  .strip{display:grid;grid-template-columns:repeat(4,1fr);height:5px}
+  .strip span:nth-child(1){background:var(--t1)}.strip span:nth-child(2){background:var(--t2)}
+  .strip span:nth-child(3){background:var(--t3)}.strip span:nth-child(4){background:var(--t4)}
+
+  .cols{max-width:800px;margin:28px auto 0;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .col{background:#fff;border:1px solid #ddd}
+  .col h2{margin:0;background:var(--navy);color:#fff;padding:10px 14px;font-size:15px;letter-spacing:1px;text-transform:uppercase;text-align:center}
+  .list{display:grid;gap:16px;padding:18px}
+
+  a.plan{display:flex;justify-content:space-between;align-items:center;padding:26px 28px;min-height:84px;border:1px solid var(--c);border-radius:999px;color:var(--navy);text-decoration:none;font-weight:bold;font-size:20px;background:var(--l);box-shadow:0 2px 6px rgba(29,43,79,.10);transition:background .2s,color .2s,transform .2s,box-shadow .2s}
+  a.plan:hover{background:var(--c);color:#fff;transform:translateY(-2px);box-shadow:0 8px 16px rgba(29,43,79,.2)}
+  a.plan small{font-weight:normal;font-size:15px;opacity:.75}
+  .y7{--c:var(--t1);--l:var(--t1l)} .y8{--c:var(--t2);--l:var(--t2l)} .y9{--c:var(--t3);--l:var(--t3l)} .y10{--c:var(--t4);--l:var(--t4l)}
+
+  .soon{display:flex;justify-content:space-between;align-items:center;padding:26px 28px;min-height:84px;border:1px dashed var(--c);border-radius:999px;color:var(--soon);font-size:18px;background:linear-gradient(90deg,var(--l),#fff 70%)}
+  .soon small{font-style:italic;font-size:14px}
+
+  footer{max-width:800px;margin:20px auto 24px;padding:0 16px;font-size:12px;color:var(--muted)}
+  @media (max-width:560px){.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="banner">
+    <div class="school">South Oakleigh College</div>
+    <h1>2027 Curriculum Plans</h1>
+    <div class="tag">English · Years 7 to 10</div>
+  </div>
+  <div class="strip"><span></span><span></span><span></span><span></span></div>
+</header>
+
+<main class="cols">
+  <section class="col">
+    <h2>Mainstream</h2>
+    <div class="list">
+      <div class="soon y7"><span>Year 7</span><small>Coming soon</small></div>
+      <div class="soon y8"><span>Year 8</span><small>Coming soon</small></div>
+      <div class="soon y9"><span>Year 9</span><small>Coming soon</small></div>
+      <div class="soon y10"><span>Year 10</span><small>Coming soon</small></div>
+    </div>
+  </section>
+
+  <section class="col">
+    <h2>Advanced</h2>
+    <div class="list">
+      <a class="plan y7" href="07ADVEN1.html"><span>Year 7</span><small>Open plan &rarr;</small></a>
+      <div class="soon y8"><span>Year 8</span><small>Coming soon</small></div>
+      <a class="plan y9" href="09ADVEN1.html"><span>Year 9</span><small>Open plan &rarr;</small></a>
+      <a class="plan y10" href="10ADVEN1.html"><span>Year 10</span><small>Open plan &rarr;</small></a>
+    </div>
+  </section>
+</main>
+
+<footer>Print or save as PDF from inside a plan (A3 landscape).</footer>
+</body>
+</html>
