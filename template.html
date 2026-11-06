@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curriculum Plan 2027</title>
+<style>
+  :root{--ink:#1f2933;--line:#9aa5b1;--bg:#f7f7f5}
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+  header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+  h1{margin:0;background:#1d2b4f;color:#fff;padding:6px 16px;font-size:20px;letter-spacing:1px;text-transform:uppercase}
+  .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .tools button{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:4px;cursor:pointer}
+  #save{background:#1d2b4f;color:#fff;border-color:#1d2b4f}
+  #status{font-size:13px;color:#52606d}
+  .hint{font-size:12px;color:#52606d;margin:0 0 12px}
+  .grid{display:grid;grid-template-columns:1fr;gap:20px}
+  section{background:#fff;padding:8px;border:1px solid #ddd;overflow-x:auto}
+  h2{text-align:center;margin:4px 0 2px;font-size:18px}
+  .dates{text-align:center;font-size:12px;color:#52606d;margin-bottom:6px}
+  table{border-collapse:collapse;table-layout:fixed;font-size:12px}
+  th,td{border:1px solid var(--line);padding:3px;vertical-align:top}
+  thead th{font-size:13px}
+  thead th small{display:block;font-weight:normal;font-size:11px}
+  .hol{display:block;font-size:10px;font-weight:normal;opacity:.9}
+  .tag{display:block;font-size:11px;font-weight:bold;text-transform:uppercase}
+  .t1{--c:#3d7cc9;--l:#cfe0f5}.t2{--c:#4caf50;--l:#d3ecd2}.t3{--c:#d98a5f;--l:#f3d9c9}.t4{--c:#a35ea8;--l:#e6cfe8}
+  .term thead th{background:var(--c);color:#fff}
+  .term thead th.grey{background:#8a8f94}
+  td{background:var(--l)}
+  td.grey{background:#d9dbdd;color:#6b7075}
+  .wn{min-height:24px;font-size:12px;font-weight:bold;border-bottom:1px solid var(--line);margin-bottom:4px;outline:none;word-wrap:break-word}
+  .wn:empty::before{content:"Notes / CAT";color:#8a939b;font-weight:normal}
+  .wn.cat{background:#1d2b4f;color:#fff;border:none;border-radius:3px;padding:4px 6px;margin-bottom:6px;font-size:12px;letter-spacing:.3px}
+  .wn.cat:empty::before{content:none}
+  .les{margin-top:3px}
+  .lh{cursor:pointer;background:rgba(0,0,0,.07);padding:4px 6px;font-weight:bold;border:1px solid var(--line);user-select:none;font-size:12px}
+  .lh::before{content:"\25B8  "}
+  .les.open .lh::before{content:"\25BE  "}
+  .les.filled .lh{background:var(--c);color:#fff}
+  td.grey .lh{background:#c3c6c9;color:#44494e}
+  .lb{display:none;min-height:50px;padding:4px;border:1px solid var(--line);border-top:none;background:#fff;word-wrap:break-word}
+  .les.open .lb{display:block}
+  .fl{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;color:#52606d;margin:6px 0 1px}
+  .fld{min-height:22px;padding:2px 4px;border-bottom:1px dotted var(--line);outline:none;word-wrap:break-word;font-size:12px}
+  .fld:empty::before{content:attr(data-ph);color:#9aa3ab;font-style:italic}
+  .fld:focus{background:#fffbe6}
+  .wn.cat{cursor:pointer}
+  .info{display:none;background:#fff;border:1px solid var(--line);border-radius:3px;padding:5px 6px;margin:0 0 6px;font-size:12px;outline:none;word-wrap:break-word}
+  .wn.cat.open + .info{display:block}
+  .info:empty::before{content:attr(data-ph);color:#9aa3ab;font-style:italic}
+  .ccw{margin:0 0 4px}
+  .cch{cursor:pointer;font-size:11px;font-weight:bold;color:#2d3748;background:rgba(0,0,0,.06);border:1px solid var(--line);padding:2px 6px;user-select:none}
+  .cch::before{content:"\25B8  "}
+  .ccw.open .cch::before{content:"\25BE  "}
+  .codes{display:none;font-size:11px;color:#2d3748;padding:3px 4px;border:1px solid var(--line);border-top:none;background:#fff;word-wrap:break-word;outline:none}
+  .ccw.open .codes{display:block}
+  .codes:empty::before{content:attr(data-ph);color:#9aa3ab;font-style:italic}
+  .codes:focus{background:#fffbe6}
+  .wn:focus{outline:2px solid #1d2b4f}
+  @media print{
+    @page{size:A3 landscape;margin:8mm}
+    body{background:#fff;padding:0}
+    .tools,.hint{display:none}
+    .grid{gap:8px}
+    section{break-inside:avoid;border:none}
+    .lb{display:block!important;min-height:30px}
+    .lh::before{content:""}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1 contenteditable="true">Curriculum Plan 2027</h1>
+  <div class="tools">
+    <span id="status"></span>
+    <button id="save">Save</button>
+    <button onclick="window.print()">Print</button>
+    <button id="clear">Clear all</button>
+  </div>
+</header>
+<p class="hint">Click a lesson to open it, then type. Press Save (or Ctrl+S) to save your changes into this file. Prints on A3 landscape.</p>
+<div class="grid" id="grid"></div>
+<script>
+const TERMS=[
+ {n:1,start:"2027-01-25",weeks:9,label:"Wed 27 Jan – Thu 25 Mar (students start Thu 28 Jan)",
+  notes:{1:"Starts Wed",7:"Labour Day Mon",9:"Ends Thu (Good Fri)"},grey:{},hol:[7,9]},
+ {n:2,start:"2027-04-12",weeks:11,label:"Mon 12 Apr – Fri 25 Jun",
+  notes:{10:"King's Bday Mon"},grey:{9:"Exams",11:"Set-Up"},hol:[10],noLessons:[9],exam:[9]},
+ {n:3,start:"2027-07-12",weeks:10,label:"Mon 12 Jul – Fri 17 Sep",notes:{},grey:{},hol:[]},
+ {n:4,start:"2027-10-04",weeks:11,label:"Mon 4 Oct – Fri 17 Dec",
+  notes:{5:"Cup Day Tue"},grey:{6:"Exams",8:"Step-Up",9:"Step-Up",10:"Activities Week",11:"Clean-Up Week"},hol:[5],noLessons:[6,8,9,10,11],exam:[6]}
+];
+const DEFAULTS={};
+const SAVED={};
+let store=Object.assign({},DEFAULTS,SAVED);
+let dirty=false, handle=null;
+const grid=document.getElementById("grid");
+const statusEl=document.getElementById("status");
+const fmt=d=>d.toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+function setStatus(t){statusEl.textContent=t;}
+
+TERMS.forEach(t=>{
+  const s=document.createElement("section");s.className="term t"+t.n;
+  let h=`<h2>Term ${t.n}</h2><div class="dates">${t.label} · ${t.weeks} weeks</div>`+
+        `<table style="width:${(t.weeks/11*100).toFixed(2)}%;min-width:${t.weeks*120}px"><thead><tr>`;
+  for(let w=1;w<=t.weeks;w++){
+    const g=t.grey[w];
+    const d=new Date(t.start+"T00:00");d.setDate(d.getDate()+7*(w-1));
+    h+=`<th${g?' class="grey"':""}>Week ${w}<small>${fmt(d)}</small>`+
+       `${t.notes[w]?`<span class="hol">${t.notes[w]}</span>`:""}`+
+       `${g?`<span class="tag">${g}</span>`:""}</th>`;
+  }
+  h+="</tr></thead><tbody><tr>";
+  for(let w=1;w<=t.weeks;w++){
+    const g=t.grey[w];
+    const lessons=(t.noLessons||[]).includes(w)?[]:t.hol.includes(w)?["Lesson I","Lesson II","Lesson III","Ad libitum"]:["Lesson I","Lesson II","Lesson III","Lesson IV"];
+    const nn=(t.noLessons||[]).includes(w)&&!(t.exam||[]).includes(w);
+    h+=`<td${g&&!(t.exam||[]).includes(w)?' class="grey"':""}>${nn?"":`<div class="wn" contenteditable="true" data-k="${t.n}--${w}"></div><div class="info" contenteditable="true" data-k="info-${t.n}--${w}" data-ph="Assessment details"></div><div class="ccw"><div class="cch">Curriculum codes</div><div class="codes" contenteditable="true" data-k="codes-${t.n}--${w}" data-ph="Add curriculum codes"></div></div>`}`;
+    lessons.forEach((name,i)=>{
+      const k=`${t.n}-${w}-${i+1}`;
+      h+=`<div class="les"><div class="lh">${store[`${t.n}-${w}-${i+1}-title`]||name}</div><div class="lb">`+
+         `<div class="fl">Learning Intention</div><div class="fld" contenteditable="true" data-k="${k}-li" data-ph="What students will learn (student-friendly)"></div>`+
+         `<div class="fl">Success Criteria</div><div class="fld" contenteditable="true" data-k="${k}-sc" data-ph="Observable, specific steps to show learning"></div>`+
+         `<div class="fl">Do Now</div><div class="fld" contenteditable="true" data-k="${k}-dn" data-ph="Starter task at the start of the lesson"></div>`+
+         `</div></div>`;
+    });
+    h+="</td>";
+  }
+  h+="</tr></tbody></table>";
+  s.innerHTML=h;grid.appendChild(s);
+});
+
+document.querySelectorAll("[data-k]").forEach(el=>{
+  el.textContent=store[el.dataset.k]||"";
+  const mark=()=>{
+    if(el.classList.contains("wn"))el.classList.toggle("cat",/^(S[12]_|EXAM)/.test(el.innerText.trim()));
+    const les=el.closest(".les");
+    if(les&&el.classList.contains("fld"))les.classList.toggle("filled",[...les.querySelectorAll(".fld")].some(f=>f.innerText.trim()));
+  };
+  mark();
+  el.addEventListener("input",()=>{store[el.dataset.k]=el.innerText.trim();dirty=true;setStatus("Unsaved changes");mark();});
+});
+document.querySelectorAll(".cch").forEach(h=>h.addEventListener("click",()=>h.parentElement.classList.toggle("open")));
+document.querySelectorAll(".wn").forEach(w=>w.addEventListener("click",()=>{if(w.classList.contains("cat"))w.classList.toggle("open");}));
+document.querySelectorAll(".lh").forEach(hd=>hd.addEventListener("click",()=>hd.parentElement.classList.toggle("open")));
+document.querySelector("h1").addEventListener("input",()=>{dirty=true;setStatus("Unsaved changes");});
+
+// Build the file text: original page with the current entries written into SAVED
+function fileText(){
+  const c=document.documentElement.cloneNode(true);
+  c.querySelector("#grid").innerHTML="";
+  c.querySelector("#status").textContent="";
+  const data=JSON.stringify(store);
+  const html="<!doctype html>\n"+c.outerHTML;
+  return html.replace(/const SAVED=.*;\n/, ()=>"const SAVED="+data+";\n");
+}
+async function save(){
+  const text=fileText();
+  if(window.showSaveFilePicker){
+    try{
+      if(!handle)handle=await window.showSaveFilePicker({suggestedName:document.title+".html",
+        types:[{description:"HTML file",accept:{"text/html":[".html"]}}]});
+      const w=await handle.createWritable();
+      await w.write(text);
+      await w.close();
+      dirty=false;
+      setStatus("Saved at "+new Date().toLocaleTimeString("en-AU",{hour:"2-digit",minute:"2-digit"}));
+      return;
+    }catch(e){
+      if(e.name==="AbortError")return;
+      handle=null;
+    }
+  }
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([text],{type:"text/html"}));
+  a.download=document.title+".html";
+  a.click();
+  dirty=false;
+  setStatus("Downloaded – replace the file in your folder with it");
+}
+document.getElementById("save").onclick=save;
+if(location.hostname.endsWith("github.io")){["save","clear"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display="none";});}
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();save();}});
+window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue="";}});
+document.getElementById("clear").onclick=()=>{
+  if(!window.confirm("Clear every entry?"))return;
+  store={};
+  document.querySelectorAll("[data-k]").forEach(el=>{el.textContent="";});
+  document.querySelectorAll(".les.filled").forEach(el=>el.classList.remove("filled"));
+  dirty=true;setStatus("Unsaved changes – click Save");
+};
+</script>
+</body>
+</html>
