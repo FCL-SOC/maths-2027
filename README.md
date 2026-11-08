@@ -1,9 +1,10 @@
-# 2027 English Curriculum Plans
+# 2027 Maths Curriculum Plans
 
-South Oakleigh College English faculty curriculum plans for 2027, Years 7 to 12.
+South Oakleigh College Maths faculty curriculum plans for 2027, Years 7 to 12.
 
-- **Live site:** https://nmo-soc.github.io/english-2027/
-- **Repository:** https://github.com/NMO-SOC/english-2027
+- **Live site:** https://fcl-soc.github.io/maths-2027/
+- **Repository:** https://github.com/FCL-SOC/maths-2027
+- **Design source:** https://github.com/NMO-SOC/english-2027 (see [Syncing with english-2027](#syncing-with-english-2027))
 
 The site is plain HTML with no server, database, framework or build tools. Each plan is a single HTML file that holds its own design, code and data. GitHub Pages publishes whatever is on the `main` branch.
 
@@ -26,6 +27,7 @@ The site is plain HTML with no server, database, framework or build tools. Each 
 13. [Accessibility, phones and browsers](#accessibility-phones-and-browsers)
 14. [Troubleshooting](#troubleshooting)
 15. [Quick reference](#quick-reference)
+16. [Syncing with english-2027](#syncing-with-english-2027)
 
 ---
 
@@ -35,12 +37,8 @@ The site is plain HTML with no server, database, framework or build tools. Each 
 |---|---|
 | `index.html` | The homepage. It lists every year level and links to the plans that exist. |
 | `template.html` | The master design for every curriculum plan. It holds no data. **All design changes are made here.** |
-| `09ADVEN1.html` | The Year 9 Advanced English plan: the template design plus Year 9 data. |
-| `10ADVEN1.html` | The Year 10 Advanced English plan: the template design plus Year 10 data. |
-| `09EN.html` | The Year 9 Mainstream English plan (draft): the template design plus Year 9 data. |
-| `10EN.html` | The Year 10 Mainstream English plan (draft): the template design plus Year 10 data. The film for the film study is still to be decided. |
+| `<code>.html` | One file per plan (e.g. `10ACCMA.html`): the template design plus that class's data. None exist yet. |
 | `build.py` | A small script that copies the template's design into the plans and keeps each plan's own title, heading and data. |
-| `logo.png` | The faculty values logo (Consistency, Culture and Collaboration). It is the browser tab icon and sits in the homepage footer. |
 | `README.md` | This file. |
 
 ---
@@ -61,19 +59,18 @@ The page detects the live site by its web address: any address ending in `github
 
 From top to bottom:
 
-1. **Banner:** "South Oakleigh College", the title "2027 English Curriculum Plans", "Years 7 to 12", and a **current-week line** that updates itself (see below).
+1. **Banner:** "South Oakleigh College", the title "2027 Maths Curriculum Plans", "Years 7 to 12", and a **current-week line** that updates itself (see below).
 2. **Term colour strip:** four bands in the term colours (blue, green, orange, purple).
 3. **Mainstream** column: Years 7, 8, 9 and 10.
-4. **Advanced** column: Years 7, 8, 9 and 10.
+4. **Accelerated** column: Years 7, 8, 9 and 10.
 5. **VCE** panel across the full width: Years 11 and 12.
-6. **Footer:** the faculty values logo.
 
 ### Plan cards
 
-- A **finished plan** is a coloured card in its year's colour (Year 7 blue, Year 8 green, Year 9 orange, Year 10 purple, VCE navy). It shows the year, the class code (e.g. `09ADVEN1`) and "Open plan".
+- A **finished plan** is a coloured card in its year's colour (Year 7 blue, Year 8 green, Year 9 orange, Year 10 purple, VCE navy). It shows the year, the class code (e.g. `09ACCMA`) and "Open plan".
 - A **plan not made yet** is a dashed card marked "Coming soon".
 
-To turn a "Coming soon" card into a link, replace its line in `index.html`. For example, for Year 8 Advanced, change:
+To turn a "Coming soon" card into a link, replace its line in `index.html`. For example, for Year 8 Accelerated, change:
 
 ```html
 <div class="soon y8"><span>Year 8</span><small>Coming soon</small></div>
@@ -82,7 +79,7 @@ To turn a "Coming soon" card into a link, replace its line in `index.html`. For 
 to:
 
 ```html
-<a class="plan y8" href="08ADVEN1.html"><span>Year 8<span class="code">08ADVEN1</span></span><small>Open plan</small></a>
+<a class="plan y8" href="08ACCMA.html"><span>Year 8<span class="code">08ACCMA</span></span><small>Open plan</small></a>
 ```
 
 Use `y7`, `y8`, `y9`, `y10`, `y11` or `y12` for the colour.
@@ -109,7 +106,7 @@ To preview a date, add `?today=YYYY-MM-DD` to the address, e.g. `index.html?toda
 ### Header
 
 - **All plans** (left, house icon): back to the homepage.
-- **Plan title** (centre): e.g. "10ADVEN1 Curriculum Plan 2027".
+- **Plan title** (centre): e.g. "10ACCMA Curriculum Plan 2027".
 - **Tools** (right):
   - **Expand all / Collapse all:** opens or closes every lesson, assessment and curriculum-code panel.
   - **Save:** local editing only. Hidden on the live site.
@@ -133,7 +130,7 @@ A collapsible panel listing every CAT and exam in the plan. It is collapsed by d
 - The badge beside the title shows how many assessments there are, with "Show" or "Hide" next to it.
 - **Columns:**
   - **When:** term and week (a link) plus the date.
-  - **Assessment:** the code (e.g. `S1_10ADVEN1_CAT1`) and its name.
+  - **Assessment:** the code (e.g. `S1_10ACCMA_CAT1`) and its name.
   - **Curriculum codes:** that week's codes.
 - Clicking a **When** link scrolls to that week and opens its assessment details.
 - **It always prints**, even if collapsed on screen.
@@ -151,13 +148,13 @@ There is one table per term, with one column per week.
 - The current week has a navy outline and a "This week" tag.
 
 **Each week's cell, top to bottom:**
-1. **Weekly topic**, e.g. "Reading Macbeth: Acts 1–2". If it's a CAT or exam it shows as a navy badge instead (see below).
+1. **Weekly topic**, e.g. "Linear equations". If it's a CAT or exam it shows as a navy badge instead (see below).
 2. **Assessment details** (hidden until opened): only used for CAT and exam weeks.
 3. **Curriculum codes:** a small bar. Click it to show that week's Victorian Curriculum codes. On the live site the bar is hidden when the week has no codes.
 4. **Lessons:**
    - Normal weeks have four lessons: Lesson I, II, III and IV.
    - Weeks with a public holiday or a short week have Lesson I, II and III plus **Ad libitum** (a flexible lesson).
-   - A lesson bar shows the lesson's title if it has one (e.g. "Act 1 Scene 3"), otherwise "Lesson I" and so on.
+   - A lesson bar shows the lesson's title if it has one (e.g. "Solving two-step equations"), otherwise "Lesson I" and so on.
    - Click a lesson bar to open it. Each lesson has three fields:
      - **Learning Intention:** what students will learn.
      - **Success Criteria:** how students show it. Separate the criteria with ` | `; the live site shows them as a bulleted list.
@@ -172,8 +169,8 @@ There is one table per term, with one column per week.
 A weekly topic is treated as an assessment when it **starts with** `S1_`, `S2_` or `EXAM`. For example:
 
 ```
-S1_10ADVEN1_CAT1: Personal Text Response Essay (Rear Window)
-EXAM: Creating Texts and English Conventions
+S1_10ACCMA_CAT1: Algebra and Linear Relations Test
+EXAM: Semester 1 Examination
 ```
 
 - It shows as a navy badge.
@@ -211,7 +208,7 @@ On the live site:
 ### Setting up
 
 1. Get a copy of the repository on your computer: clone it with Git or GitHub Desktop, or download it.
-2. Open the plan file (e.g. `10ADVEN1.html`) by double-clicking it. **Use Chrome or Edge.** They can save straight back into the file; other browsers download a copy instead.
+2. Open the plan file (e.g. `10ACCMA.html`) by double-clicking it. **Use Chrome or Edge.** They can save straight back into the file; other browsers download a copy instead.
 
 ### Typing
 
@@ -226,7 +223,7 @@ Empty boxes show a grey italic hint about what goes in them.
 
 **Spotting blanks:** a lesson bar turns **solid colour** once any of its three fields has text. Pale bars are lessons with nothing entered yet. This only shows on a local copy.
 
-**Lesson titles** (e.g. "Act 1 Scene 3" in place of "Lesson III") have no typing box. They are stored as entries named like `1-4-3-title` (Term 1, Week 4, Lesson 3) in the plan's data line (see [How the data is stored](#how-the-data-is-stored)).
+**Lesson titles** (e.g. "Solving two-step equations" in place of "Lesson III") have no typing box. They are stored as entries named like `1-4-3-title` (Term 1, Week 4, Lesson 3) in the plan's data line (see [How the data is stored](#how-the-data-is-stored)).
 
 ### Saving
 
@@ -246,7 +243,7 @@ The saved file is the whole page with your entries written into its `SAVED` data
 After saving, commit and push the changed file:
 
 ```bash
-git add 10ADVEN1.html
+git add 10ACCMA.html
 git commit -m "Update Term 2 lessons"
 git push
 ```
@@ -273,7 +270,7 @@ Plans are laid out for **A3 landscape**: each term starts on a new page, and col
 
 ## Changing the design: `template.html` and `build.py`
 
-**Rule:** every plan must look and work the same. Make design changes (layout, colours, buttons, features, term dates) **only in `template.html`**, then rebuild the plans with `build.py`. Don't edit the design inside the plan files (`09ADVEN1.html`, `10ADVEN1.html`, `09EN.html`, `10EN.html`) directly. The next rebuild would overwrite it.
+**Rule:** every plan must look and work the same. Make design changes (layout, colours, buttons, features, term dates) **only in `template.html`**, then rebuild the plans with `build.py`. Don't edit the design inside the plan files (e.g. `10ACCMA.html`) directly. The next rebuild would overwrite it.
 
 ### What build.py does
 
@@ -294,7 +291,7 @@ Each plan's entries are carried across character for character; the script never
 From the repository folder (needs Python 3):
 
 ```bash
-python build.py 09ADVEN1.html 10ADVEN1.html 09EN.html 10EN.html
+python build.py <every plan file>
 ```
 
 List every plan file each time, including new ones.
@@ -305,7 +302,7 @@ Before committing a design change, check that only the design changed:
 
 ```bash
 git diff --stat
-git diff 10ADVEN1.html | grep "^[-+]const \(SAVED\|DEFAULTS\)"
+git diff 10ACCMA.html | grep "^[-+]const \(SAVED\|DEFAULTS\)"
 ```
 
 The second command should print nothing. Any output means a data line changed.
@@ -328,14 +325,14 @@ These are set as CSS variables at the top of the `<style>` block in `template.ht
 
 ## Adding a new plan
 
-Example: Year 8 Advanced, class code `08ADVEN1`.
+Example: Year 8 Accelerated, class code `08ACCMA`.
 
-1. **Copy the template:** duplicate `template.html` and name it `08ADVEN1.html`.
-2. **Set the tab title:** in the new file, change `<title>Curriculum Plan 2027</title>` to `<title>08ADVEN1 Curriculum Plan 2027</title>`.
-3. **Set the heading:** change `  <h1 contenteditable="true">Curriculum Plan 2027</h1>` to `  <h1 contenteditable="true">08ADVEN1 Curriculum Plan 2027</h1>`. Keep the two leading spaces exactly as they are, because `build.py` looks for them.
+1. **Copy the template:** duplicate `template.html` and name it `08ACCMA.html`.
+2. **Set the tab title:** in the new file, change `<title>Curriculum Plan 2027</title>` to `<title>08ACCMA Curriculum Plan 2027</title>`.
+3. **Set the heading:** change `  <h1 contenteditable="true">Curriculum Plan 2027</h1>` to `  <h1 contenteditable="true">08ACCMA Curriculum Plan 2027</h1>`. Keep the two leading spaces exactly as they are, because `build.py` looks for them.
 4. **Fill it in:** open the file in Chrome or Edge, type the plan in and **Save** over the same file.
 5. **Link it from the homepage:** change its "Coming soon" card in `index.html` (see [Plan cards](#plan-cards)).
-6. **Add it to future rebuilds:** from now on, run `python build.py 08ADVEN1.html 09ADVEN1.html 10ADVEN1.html 09EN.html 10EN.html`.
+6. **Add it to future rebuilds:** from now on, run `python build.py 08ACCMA.html <every plan file>`.
 7. **Commit and push** the new file and `index.html`.
 
 ---
@@ -393,7 +390,7 @@ const SAVED={...};
 ```
 
 - **`SAVED`** holds everything entered and saved. Pressing Save rewrites only this line.
-- **`DEFAULTS`** holds starting entries (Year 9 Advanced has a copy here; the other plans' are empty). On load, `SAVED` entries win over `DEFAULTS`.
+- **`DEFAULTS`** holds starting entries (usually empty). On load, `SAVED` entries win over `DEFAULTS`.
 
 Both are lists of `"name":"text"` pairs. The names follow a pattern:
 
@@ -419,11 +416,11 @@ Every week and term has its own address. Add it to the end of the plan's URL:
 
 | Link | Goes to |
 |---|---|
-| `10ADVEN1.html#term3` | Term 3 |
-| `10ADVEN1.html#w2-5` | Term 2, Week 5 |
-| `10ADVEN1.html#overview` | Assessments at a glance |
+| `10ACCMA.html#term3` | Term 3 |
+| `10ACCMA.html#w2-5` | Term 2, Week 5 |
+| `10ACCMA.html#overview` | Assessments at a glance |
 
-`?today=YYYY-MM-DD` previews the "This week" highlight for any date, e.g. `10ADVEN1.html?today=2027-08-04`. This works on the homepage too.
+`?today=YYYY-MM-DD` previews the "This week" highlight for any date, e.g. `10ACCMA.html?today=2027-08-04`. This works on the homepage too.
 
 ---
 
@@ -455,7 +452,7 @@ Every week and term has its own address. Add it to the end of the plan's URL:
 | Live site hasn't changed after pushing | Wait a minute or two, then hard refresh (Ctrl+F5). Check the push reached GitHub, and check the repo's **Actions** tab for the Pages deploy. |
 | Can't type in a plan | You're on the live site, which is read-only. Open your local copy of the file instead. |
 | Save downloads a file instead of saving | You're not in Chrome/Edge, or you cancelled the save window. Move the downloaded file over the original, or reopen in Chrome/Edge. |
-| "Not saved: this file's data line is missing" | The `const SAVED=…;` line was damaged or removed. Your work is still on screen, so don't close the tab. Restore the file from Git (`git checkout 10ADVEN1.html`) in a separate copy, or ask for help. |
+| "Not saved: this file's data line is missing" | The `const SAVED=…;` line was damaged or removed. Your work is still on screen, so don't close the tab. Restore the file from Git (`git checkout 10ACCMA.html`) in a separate copy, or ask for help. |
 | `build.py` stops with an `AssertionError` | One of the four kept lines (title, h1, DEFAULTS, SAVED) is missing or appears twice in the named file or the template. Check the spacing of the `<h1>` line. Nothing was written to that file. |
 | A CAT shows as a normal topic | It must **start** with `S1_`, `S2_` or `EXAM`, with no space before it. |
 | Success criteria show as one line on the live site | Separate them with ` \| ` (space, bar, space). |
@@ -470,13 +467,31 @@ Every week and term has its own address. Add it to the end of the plan's URL:
 | Task | How |
 |---|---|
 | Edit a plan | Open the local file in Chrome/Edge, type, press Ctrl+S, then commit and push |
-| Change the design for all plans | Edit `template.html`, run `python build.py 09ADVEN1.html 10ADVEN1.html 09EN.html 10EN.html`, check data lines unchanged, then commit and push |
+| Change the design for all plans | Edit `template.html`, run `python build.py <every plan file>`, check data lines unchanged, then commit and push |
 | Add a plan | Copy `template.html`, set the title and h1, fill in, link from `index.html`, add to the build command |
-| Make a CAT | Start the weekly topic with `S1_`, `S2_` or `EXAM`, e.g. `S1_09ADVEN1_CAT1: Essay` |
+| Make a CAT | Start the weekly topic with `S1_`, `S2_` or `EXAM`, e.g. `S1_09ACCMA_CAT1: Algebra Test` |
 | List success criteria | Separate with ` \| ` |
 | Print everything | **Print full plan** |
 | Print an overview | **Print CATs and topics** |
 | Make a PDF | Either print button, then choose Save as PDF |
 | Change term dates | `TERMS` in `template.html` and `T` in `index.html`, then rebuild |
-| Link to a week | `10ADVEN1.html#w2-5` |
+| Link to a week | `10ACCMA.html#w2-5` |
 | Preview a date | Add `?today=2027-05-12` to the address |
+
+---
+
+## Syncing with english-2027
+
+This site uses the English faculty's design from [NMO-SOC/english-2027](https://github.com/NMO-SOC/english-2027). **`template.html` and `build.py` must stay identical to the English repo.** Don't edit them here. Make design changes in english-2027 first, then pull them across:
+
+```bash
+curl -sO https://raw.githubusercontent.com/NMO-SOC/english-2027/main/template.html
+curl -sO https://raw.githubusercontent.com/NMO-SOC/english-2027/main/build.py
+python build.py <every plan file>
+```
+
+Then check the data lines are unchanged (see [Checking nothing in the data changed](#checking-nothing-in-the-data-changed)) and commit.
+
+The template's `<link rel="icon" href="logo.png">` line is kept for compatibility. This repo has no logo, so browsers show their default tab icon.
+
+`index.html` and this README are maths-only and never sync. If the English homepage's design changes, copy the CSS and script by hand and keep the maths text.
