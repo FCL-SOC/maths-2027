@@ -37,6 +37,8 @@ The site is plain HTML with no server, database, framework or build tools. Each 
 | `template.html` | The master design for every curriculum plan. It holds no data. **All design changes are made here.** |
 | `09ADVEN1.html` | The Year 9 Advanced English plan: the template design plus Year 9 data. |
 | `10ADVEN1.html` | The Year 10 Advanced English plan: the template design plus Year 10 data. |
+| `09EN.html` | The Year 9 Mainstream English plan (draft): the template design plus Year 9 data. |
+| `10EN.html` | The Year 10 Mainstream English plan (draft): the template design plus Year 10 data. The film for the film study is still to be decided. |
 | `build.py` | A small script that copies the template's design into the plans and keeps each plan's own title, heading and data. |
 | `logo.png` | The faculty values logo (Consistency, Culture and Collaboration). It is the browser tab icon and sits in the homepage footer. |
 | `README.md` | This file. |
@@ -271,7 +273,7 @@ Plans are laid out for **A3 landscape**: each term starts on a new page, and col
 
 ## Changing the design: `template.html` and `build.py`
 
-**Rule:** every plan must look and work the same. Make design changes (layout, colours, buttons, features, term dates) **only in `template.html`**, then rebuild the plans with `build.py`. Don't edit the design inside `09ADVEN1.html` or `10ADVEN1.html` directly. The next rebuild would overwrite it.
+**Rule:** every plan must look and work the same. Make design changes (layout, colours, buttons, features, term dates) **only in `template.html`**, then rebuild the plans with `build.py`. Don't edit the design inside the plan files (`09ADVEN1.html`, `10ADVEN1.html`, `09EN.html`, `10EN.html`) directly. The next rebuild would overwrite it.
 
 ### What build.py does
 
@@ -292,7 +294,7 @@ Each plan's entries are carried across character for character; the script never
 From the repository folder (needs Python 3):
 
 ```bash
-python build.py 09ADVEN1.html 10ADVEN1.html
+python build.py 09ADVEN1.html 10ADVEN1.html 09EN.html 10EN.html
 ```
 
 List every plan file each time, including new ones.
@@ -333,7 +335,7 @@ Example: Year 8 Advanced, class code `08ADVEN1`.
 3. **Set the heading:** change `  <h1 contenteditable="true">Curriculum Plan 2027</h1>` to `  <h1 contenteditable="true">08ADVEN1 Curriculum Plan 2027</h1>`. Keep the two leading spaces exactly as they are, because `build.py` looks for them.
 4. **Fill it in:** open the file in Chrome or Edge, type the plan in and **Save** over the same file.
 5. **Link it from the homepage:** change its "Coming soon" card in `index.html` (see [Plan cards](#plan-cards)).
-6. **Add it to future rebuilds:** from now on, run `python build.py 08ADVEN1.html 09ADVEN1.html 10ADVEN1.html`.
+6. **Add it to future rebuilds:** from now on, run `python build.py 08ADVEN1.html 09ADVEN1.html 10ADVEN1.html 09EN.html 10EN.html`.
 7. **Commit and push** the new file and `index.html`.
 
 ---
@@ -391,7 +393,7 @@ const SAVED={...};
 ```
 
 - **`SAVED`** holds everything entered and saved. Pressing Save rewrites only this line.
-- **`DEFAULTS`** holds starting entries (Year 9 has a copy here; Year 10's is empty). On load, `SAVED` entries win over `DEFAULTS`.
+- **`DEFAULTS`** holds starting entries (Year 9 Advanced has a copy here; the other plans' are empty). On load, `SAVED` entries win over `DEFAULTS`.
 
 Both are lists of `"name":"text"` pairs. The names follow a pattern:
 
@@ -468,7 +470,7 @@ Every week and term has its own address. Add it to the end of the plan's URL:
 | Task | How |
 |---|---|
 | Edit a plan | Open the local file in Chrome/Edge, type, press Ctrl+S, then commit and push |
-| Change the design for all plans | Edit `template.html`, run `python build.py 09ADVEN1.html 10ADVEN1.html`, check data lines unchanged, then commit and push |
+| Change the design for all plans | Edit `template.html`, run `python build.py 09ADVEN1.html 10ADVEN1.html 09EN.html 10EN.html`, check data lines unchanged, then commit and push |
 | Add a plan | Copy `template.html`, set the title and h1, fill in, link from `index.html`, add to the build command |
 | Make a CAT | Start the weekly topic with `S1_`, `S2_` or `EXAM`, e.g. `S1_09ADVEN1_CAT1: Essay` |
 | List success criteria | Separate with ` \| ` |
