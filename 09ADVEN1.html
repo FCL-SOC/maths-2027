@@ -156,6 +156,9 @@
     .ccw:has(.codes:empty){display:none}
     .fld ul{padding:0;list-style:none}.fld li{display:inline}.fld li+li::before{content:" | "}
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    /* "Print CATs and topics": weekly topics and CATs only */
+    body.summary .les,body.summary .ccw{display:none!important}
+    body.summary .wn{border-bottom:none}
   }
 </style>
 </head>
@@ -168,7 +171,8 @@
     <span id="status" aria-live="polite"></span>
     <button id="expand">Expand all</button>
     <button id="save" class="ed">Save</button>
-    <button onclick="window.print()">Print / save as PDF</button>
+    <button onclick="printPlan('full')" title="Every lesson with learning intentions, success criteria and Do now. Print or save as PDF.">Print full plan</button>
+    <button onclick="printPlan('summary')" title="Weekly topics and CATs only. Print or save as PDF.">Print CATs and topics</button>
     <button id="clear" class="ed">Clear all</button>
   </div>
 </header>
@@ -413,6 +417,8 @@ async function save(){
   setStatus("Downloaded – replace the file in your folder with it");
 }
 document.getElementById("save").onclick=save;
+function printPlan(mode){document.body.classList.toggle("summary",mode==="summary");window.print();}
+addEventListener("afterprint",()=>document.body.classList.remove("summary"));
 document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();save();}});
 window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue="";}});
 document.getElementById("clear").onclick=()=>{
