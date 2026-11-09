@@ -485,10 +485,13 @@ Every week and term has its own address. Add it to the end of the plan's URL:
 This site uses the English faculty's design from [NMO-SOC/english-2027](https://github.com/NMO-SOC/english-2027). **`template.html` and `build.py` must stay identical to the English repo.** Don't edit them here. Make design changes in english-2027 first, then pull them across:
 
 ```bash
-curl -sO https://raw.githubusercontent.com/NMO-SOC/english-2027/main/template.html
-curl -sO https://raw.githubusercontent.com/NMO-SOC/english-2027/main/build.py
+git remote add upstream https://github.com/NMO-SOC/english-2027   # once only
+git fetch upstream
+git checkout upstream/main -- template.html build.py
 python build.py <every plan file>
 ```
+
+Don't use GitHub's **Sync fork** button. It merges the whole English repo, including its plans, homepage and README.
 
 Then check the data lines are unchanged (see [Checking nothing in the data changed](#checking-nothing-in-the-data-changed)) and commit.
 
